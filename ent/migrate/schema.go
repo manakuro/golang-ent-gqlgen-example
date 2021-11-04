@@ -13,7 +13,7 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "title", Type: field.TypeString, Default: ""},
 		{Name: "description", Type: field.TypeString, Default: ""},
-		{Name: "user_articles", Type: field.TypeInt, Nullable: true},
+		{Name: "user_id", Type: field.TypeInt, Nullable: true},
 	}
 	// ArticlesTable holds the schema information for the "articles" table.
 	ArticlesTable = &schema.Table{
@@ -22,7 +22,7 @@ var (
 		PrimaryKey: []*schema.Column{ArticlesColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "articles_users_articles",
+				Symbol:     "user_id",
 				Columns:    []*schema.Column{ArticlesColumns[3]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,

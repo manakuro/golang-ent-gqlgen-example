@@ -391,13 +391,13 @@ func (uq *UserQuery) sqlAll(ctx context.Context) ([]*User, error) {
 			return nil, err
 		}
 		for _, n := range neighbors {
-			fk := n.user_articles
+			fk := n.user_id
 			if fk == nil {
-				return nil, fmt.Errorf(`foreign-key "user_articles" is nil for node %v`, n.ID)
+				return nil, fmt.Errorf(`foreign-key "user_id" is nil for node %v`, n.ID)
 			}
 			node, ok := nodeids[*fk]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "user_articles" returned %v for node %v`, *fk, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "user_id" returned %v for node %v`, *fk, n.ID)
 			}
 			node.Edges.Articles = append(node.Edges.Articles, n)
 		}

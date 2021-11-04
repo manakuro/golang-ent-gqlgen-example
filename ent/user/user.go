@@ -27,7 +27,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "article" package.
 	ArticlesInverseTable = "articles"
 	// ArticlesColumn is the table column denoting the articles relation/edge.
-	ArticlesColumn = "user_articles"
+	ArticlesColumn = "user_id"
 )
 
 // Columns holds all SQL columns for user fields.

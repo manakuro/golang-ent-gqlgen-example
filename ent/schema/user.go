@@ -33,6 +33,9 @@ func (User) Fields() []ent.Field {
 func (User) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("articles", Article.Type).
-			StorageKey(edge.Column("user_id")),
+			StorageKey(
+				edge.Column("user_id"),
+				edge.Symbol("user_id"),
+			),
 	}
 }

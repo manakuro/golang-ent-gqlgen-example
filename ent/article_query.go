@@ -385,10 +385,10 @@ func (aq *ArticleQuery) sqlAll(ctx context.Context) ([]*Article, error) {
 		ids := make([]int, 0, len(nodes))
 		nodeids := make(map[int][]*Article)
 		for i := range nodes {
-			if nodes[i].user_articles == nil {
+			if nodes[i].user_id == nil {
 				continue
 			}
-			fk := *nodes[i].user_articles
+			fk := *nodes[i].user_id
 			if _, ok := nodeids[fk]; !ok {
 				ids = append(ids, fk)
 			}
@@ -402,7 +402,7 @@ func (aq *ArticleQuery) sqlAll(ctx context.Context) ([]*Article, error) {
 		for _, n := range neighbors {
 			nodes, ok := nodeids[n.ID]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "user_articles" returned %v`, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "user_id" returned %v`, n.ID)
 			}
 			for i := range nodes {
 				nodes[i].Edges.User = n
