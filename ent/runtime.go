@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"golang-ent-gqlgen-example/ent/article"
 	"golang-ent-gqlgen-example/ent/schema"
 	"golang-ent-gqlgen-example/ent/user"
 	"time"
@@ -12,6 +13,16 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	articleFields := schema.Article{}.Fields()
+	_ = articleFields
+	// articleDescTitle is the schema descriptor for title field.
+	articleDescTitle := articleFields[0].Descriptor()
+	// article.DefaultTitle holds the default value on creation for the title field.
+	article.DefaultTitle = articleDescTitle.Default.(string)
+	// articleDescDescription is the schema descriptor for description field.
+	articleDescDescription := articleFields[1].Descriptor()
+	// article.DefaultDescription holds the default value on creation for the description field.
+	article.DefaultDescription = articleDescDescription.Default.(string)
 	userFields := schema.User{}.Fields()
 	_ = userFields
 	// userDescName is the schema descriptor for name field.

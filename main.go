@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"golang-ent-gqlgen-example/ent"
+	"golang-ent-gqlgen-example/ent/article"
 	"golang-ent-gqlgen-example/ent/user"
 	"log"
 	"net/http"
@@ -51,7 +52,22 @@ func main() {
 		return c.String(http.StatusOK, "Welcome!")
 	})
 	e.POST("/users", func(c echo.Context) error {
-		u, err := client.User.Create().SetName("Bob").SetAge(21).Save(c.Request().Context())
+		// Create an article entity
+		a, err := client.Article.Create().
+			SetTitle("title 1").
+			SetDescription("description 1").
+			Save(c.Request().Context())
+		if !errors.Is(err, nil) {
+			log.Fatalf("Error: failed creating article %v\n", err)
+		}
+
+		u, err := client.User.
+			Create().
+			SetName("Bob").
+			SetAge(21).
+			AddArticles(a). // Add article to the user
+			Save(c.Request().Context())
+
 		if !errors.Is(err, nil) {
 			log.Fatalf("Error: failed creating user %v\n", err)
 		}
@@ -59,16 +75,31 @@ func main() {
 		return c.JSON(http.StatusCreated, u)
 	})
 	e.GET("/users", func(c echo.Context) error {
-		us, err := client.User.
+		u, err := client.User.
 			Query().
-			Where(user.IDEQ(1)).
+			WithArticles().
+			Where(user.IDEQ(7)).
 			Only(c.Request().Context())
 
 		if !errors.Is(err, nil) {
 			log.Fatalf("Error: failed quering users %v\n", err)
 		}
 
-		return c.JSON(http.StatusOK, us)
+		return c.JSON(http.StatusOK, u)
+	})
+
+	e.GET("/article/user", func(c echo.Context) error {
+		u, err := client.Article.
+			Query().
+			Where(article.IDEQ(1)).
+			QueryUser().
+			Only(c.Request().Context())
+
+		if !errors.Is(err, nil) {
+			log.Fatalf("Error: failed quering article %v\n", err)
+		}
+
+		return c.JSON(http.StatusOK, u)
 	})
 
 	e.Logger.Fatal(e.Start(":8080"))

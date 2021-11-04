@@ -8,6 +8,19 @@ import (
 	"golang-ent-gqlgen-example/ent"
 )
 
+// The ArticleFunc type is an adapter to allow the use of ordinary
+// function as Article mutator.
+type ArticleFunc func(context.Context, *ent.ArticleMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ArticleFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.ArticleMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ArticleMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The UserFunc type is an adapter to allow the use of ordinary
 // function as User mutator.
 type UserFunc func(context.Context, *ent.UserMutation) (ent.Value, error)

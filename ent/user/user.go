@@ -17,8 +17,17 @@ const (
 	FieldAge = "age"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
+	// EdgeArticles holds the string denoting the articles edge name in mutations.
+	EdgeArticles = "articles"
 	// Table holds the table name of the user in the database.
 	Table = "users"
+	// ArticlesTable is the table that holds the articles relation/edge.
+	ArticlesTable = "articles"
+	// ArticlesInverseTable is the table name for the Article entity.
+	// It exists in this package in order to avoid circular dependency with the "article" package.
+	ArticlesInverseTable = "articles"
+	// ArticlesColumn is the table column denoting the articles relation/edge.
+	ArticlesColumn = "user_articles"
 )
 
 // Columns holds all SQL columns for user fields.

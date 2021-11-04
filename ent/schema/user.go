@@ -3,6 +3,8 @@ package schema
 import (
 	"time"
 
+	"entgo.io/ent/schema/edge"
+
 	"entgo.io/ent/dialect"
 
 	"entgo.io/ent"
@@ -29,5 +31,8 @@ func (User) Fields() []ent.Field {
 
 // Edges of the User.
 func (User) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		edge.To("articles", Article.Type).
+			StorageKey(edge.Column("user_id")),
+	}
 }

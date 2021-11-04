@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"golang-ent-gqlgen-example/ent/article"
 	"golang-ent-gqlgen-example/ent/user"
 	"time"
 
@@ -52,6 +53,21 @@ func (uc *UserCreate) SetNillableCreatedAt(t *time.Time) *UserCreate {
 		uc.SetCreatedAt(*t)
 	}
 	return uc
+}
+
+// AddArticleIDs adds the "articles" edge to the Article entity by IDs.
+func (uc *UserCreate) AddArticleIDs(ids ...int) *UserCreate {
+	uc.mutation.AddArticleIDs(ids...)
+	return uc
+}
+
+// AddArticles adds the "articles" edges to the Article entity.
+func (uc *UserCreate) AddArticles(a ...*Article) *UserCreate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return uc.AddArticleIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -201,6 +217,25 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Column: user.FieldCreatedAt,
 		})
 		_node.CreatedAt = value
+	}
+	if nodes := uc.mutation.ArticlesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.ArticlesTable,
+			Columns: []string{user.ArticlesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: article.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }
