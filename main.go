@@ -6,9 +6,13 @@ import (
 	"golang-ent-gqlgen-example/ent"
 	"golang-ent-gqlgen-example/ent/article"
 	"golang-ent-gqlgen-example/ent/user"
+	"golang-ent-gqlgen-example/graph"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/playground"
 
 	"github.com/go-sql-driver/mysql"
 
@@ -48,6 +52,21 @@ func main() {
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+
+	// Configure the GraphQL server and start
+	srv := handler.NewDefaultServer(graph.NewSchema(client))
+	{
+		e.POST("/query", func(c echo.Context) error {
+			srv.ServeHTTP(c.Response(), c.Request())
+			return nil
+		})
+
+		e.GET("/playground", func(c echo.Context) error {
+			playground.Handler("GraphQL", "/query").ServeHTTP(c.Response(), c.Request())
+			return nil
+		})
+	}
+
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Welcome!")
 	})
@@ -78,7 +97,7 @@ func main() {
 		u, err := client.User.
 			Query().
 			WithArticles().
-			Where(user.IDEQ(7)).
+			Where(user.IDEQ(1)).
 			Only(c.Request().Context())
 
 		if !errors.Is(err, nil) {
