@@ -8,6 +8,7 @@ import (
 	"golang-ent-gqlgen-example/ent"
 	"golang-ent-gqlgen-example/ent/user"
 	"golang-ent-gqlgen-example/graph/generated"
+	"time"
 )
 
 func (r *queryResolver) User(ctx context.Context) (*ent.User, error) {
@@ -15,7 +16,7 @@ func (r *queryResolver) User(ctx context.Context) (*ent.User, error) {
 }
 
 func (r *userResolver) CreatedAt(ctx context.Context, obj *ent.User) (string, error) {
-	return "", nil
+	return obj.CreatedAt.Format(time.RFC3339), nil
 }
 
 // Query returns generated.QueryResolver implementation.
